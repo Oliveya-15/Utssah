@@ -1,0 +1,22 @@
+import mongoose from 'mongoose';
+
+const notificationSchema = new mongoose.Schema(
+  {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    title: { type: String, required: true },
+    message: { type: String, required: true },
+    type: {
+      type: String,
+      enum: [
+        'registration', 'order', 'payment', 'confirmation', 'production',
+        'shipping', 'shipped', 'delivered', 'return', 'refund', 'birthday', 'coupon', 'general',
+      ],
+      default: 'general',
+    },
+    link: { type: String, default: '' },
+    isRead: { type: Boolean, default: false },
+  },
+  { timestamps: true }
+);
+
+export default mongoose.model('Notification', notificationSchema);

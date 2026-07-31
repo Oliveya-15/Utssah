@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;0,6..12,800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body { @apply bg-canvas text-ink font-body antialiased; }
+h1, h2, h3, h4, h5, h6 { @apply font-display; }
+
+.stitch-rule { border: none; height: 0; border-top: 2px dashed rgba(42, 27, 61, 0.15); }
+
+.btn-sticker {
+  @apply inline-flex items-center justify-center gap-2 font-display font-semibold rounded-full transition-all duration-150;
+  box-shadow: 0 3px 0 rgba(42, 27, 61, 0.18);
+}
+.btn-sticker:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(42, 27, 61, 0.18); }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #FFF8EF; }
+::-webkit-scrollbar-thumb { background: #F2C9D6; border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: #D6336C; }
+
+.line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
