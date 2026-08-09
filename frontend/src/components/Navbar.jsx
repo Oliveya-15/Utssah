@@ -80,8 +80,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-[72px] gap-4">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <span className="text-3xl">🧶</span>
-            <span className="font-display font-bold text-2xl text-rani">Utsaah</span>
+            <img src="/images/navbar_logo.png" alt="Utsaah" className="h-10 w-auto" />
           </Link>
 
           {/* Desktop nav */}

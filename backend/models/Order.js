@@ -45,6 +45,7 @@ const orderSchema = new mongoose.Schema(
     orderNumber: { type: String, unique: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     items: [orderItemSchema],
+
     address: {
       fullName: String,
       phone: String,
@@ -56,32 +57,57 @@ const orderSchema = new mongoose.Schema(
       latitude: Number,
       longitude: Number,
     },
+
     itemsTotal: { type: Number, required: true },
     couponCode: { type: String, default: '' },
     couponDiscount: { type: Number, default: 0 },
     walletUsed: { type: Number, default: 0 },
+
     giftWrap: { type: Boolean, default: false },
     giftWrapCost: { type: Number, default: 0 },
     giftNote: { type: String, default: '' },
+
     chocolateAddon: { type: Boolean, default: false },
     chocolateAddonCost: { type: Number, default: 0 },
+
     shippingCost: { type: Number, default: 0 },
     totalAmount: { type: Number, required: true },
 
-    paymentMethod: { type: String, enum: ['razorpay'], default: 'razorpay' },
-    paymentStatus: { type: String, enum: ['pending', 'paid', 'failed', 'refunded'], default: 'pending' },
-    razorpayOrderId: { type: String },
-    razorpayPaymentId: { type: String },
-    razorpaySignature: { type: String },
+    // Payment
+    paymentMethod: {
+      type: String,
+      enum: ['upi', 'whatsapp'],
+      default: 'upi',
+    },
 
-    orderStatus: { type: String, enum: ORDER_STATUSES, default: 'Order Received' },
+    paymentStatus: {
+      type: String,
+      enum: ['pending', 'paid', 'failed', 'refunded'],
+      default: 'pending',
+    },
+
+    orderStatus: {
+      type: String,
+      enum: ORDER_STATUSES,
+      default: 'Order Received',
+    },
+
     statusHistory: [statusHistorySchema],
 
     isCustomOrder: { type: Boolean, default: false },
-    customRequest: { type: mongoose.Schema.Types.ObjectId, ref: 'CustomRequest', default: null },
+    customRequest: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'CustomRequest',
+      default: null,
+    },
 
-    shippingProvider: { type: String, enum: ['', 'Rapido Parcel', 'Shiprocket'], default: '' },
-    courierPartner: { type: String, default: '' }, // Delhivery, DTDC, Blue Dart, XpressBees
+    shippingProvider: {
+      type: String,
+      enum: ['', 'Rapido Parcel', 'Shiprocket'],
+      default: '',
+    },
+
+    courierPartner: { type: String, default: '' },
     trackingNumber: { type: String, default: '' },
     estimatedDeliveryDate: { type: Date },
 
@@ -95,8 +121,12 @@ const orderSchema = new mongoose.Schema(
 
 orderSchema.pre('save', function (next) {
   if (!this.orderNumber) {
-    this.orderNumber = 'UTS' + Date.now().toString().slice(-8) + Math.floor(Math.random() * 90 + 10);
+    this.orderNumber =
+      'UTS' +
+      Date.now().toString().slice(-8) +
+      Math.floor(Math.random() * 90 + 10);
   }
+
   next();
 });
 

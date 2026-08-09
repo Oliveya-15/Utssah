@@ -10,7 +10,9 @@ const About = () => (
 
     <section className="bg-blush py-16 sm:py-24 text-center px-4">
       <p className="font-hand text-3xl text-rani mb-2">our little story</p>
-      <h1 className="font-display font-bold text-4xl sm:text-5xl text-ink mb-5">What is Utsaah?</h1>
+      <h1 className="font-display font-bold text-4xl sm:text-5xl text-ink mb-5">
+        What is <img src="/images/navbar_logo.png" alt="Utsaah" className="h-12 w-auto inline-block align-middle" />?
+      </h1>
       <p className="text-ink/60 max-w-xl mx-auto text-lg">
         <span className="font-hand text-2xl text-mehendi">"Utsaah"</span> means excitement, enthusiasm, and joyful energy — and that is exactly what Utsaah has been for us.
       </p>
@@ -23,10 +25,10 @@ const About = () => (
 
         {/* Larger Image with soft curvy frame */}
         <div className="relative shrink-0 w-full max-w-[320px] sm:max-w-[360px] md:w-[400px] mx-auto md:mx-0">
-          
+
           {/* soft outer glow */}
           <div className="absolute -inset-4 rounded-[3rem] bg-gradient-to-br from-rani/20 via-mehendi/15 to-blush/50 blur-md opacity-80" />
-          
+
           {/* main elegant frame */}
           <div className="relative rounded-[2.8rem] overflow-hidden border-[7px] border-white 
                           shadow-[0_20px_50px_-12px_rgba(180,80,100,0.22)] 

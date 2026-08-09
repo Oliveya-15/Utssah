@@ -37,7 +37,7 @@ const Login = () => {
       <Helmet><title>Login — Utsaah</title></Helmet>
       <div className="w-full max-w-md bg-white rounded-3xl shadow-card p-8 sm:p-10">
         <div className="text-center mb-8">
-          <span className="text-4xl">🧶</span>
+          <img src="/favicon.png" alt="Utsaah" className="h-12 w-auto mx-auto" />
           <h1 className="font-display font-bold text-2xl text-ink mt-2">Welcome back!</h1>
           <p className="text-ink/50 text-sm mt-1">Log in to continue your Utsaah journey</p>
         </div>

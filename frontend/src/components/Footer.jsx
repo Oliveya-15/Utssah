@@ -60,8 +60,7 @@ const Footer = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-2xl">🧶</span>
-              <span className="font-display font-bold text-xl text-white">Utsaah</span>
+              <img src="/navbar_logo_white.svg" alt="Utsaah" className="h-10 w-auto" />
             </div>
             <p className="text-sm text-white/60 leading-relaxed">
               Handcrafted with Love — crochet, custom gifts &amp; decor made just for you.
