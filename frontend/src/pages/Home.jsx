@@ -51,7 +51,7 @@ const Home = () => {
   return (
     <div>
       <Helmet>
-        <title>Utsaah — Handcrafted with Zeal | Crochet, Custom Gifts &amp; Decor</title>
+        <title>Utsaah</title>
         <meta
           name="description"
           content="Utsaah brings you handmade crochet, personalised gifts and cozy home decor — crafted with love, made to order, just for you."
@@ -66,16 +66,17 @@ const Home = () => {
               <Sparkles size={14} /> 100% Handmade · Made To Order
             </span>
             <h1 className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl text-ink leading-[1.08] mb-5">
-              Handcrafted <span className="text-rani">with zeal,</span>
-              <br /> made just for <span className="relative inline-block">
-                you
+              Chhoti <span className="text-rani">Chotti</span>
+              <br /> Khushiyan <span className="relative inline-block">
+                Chuno...
                 <svg className="absolute -bottom-1 left-0 w-full" height="10" viewBox="0 0 100 10" preserveAspectRatio="none">
                   <path d="M0,7 Q25,0 50,7 T100,7" stroke="#F5A524" strokeWidth="5" fill="none" strokeLinecap="round" />
                 </svg>
               </span>.
             </h1>
             <p className="text-ink/60 text-lg mb-8 max-w-md">
-              From crochet keepsakes to personalised gifts — every Utsaah piece is stitched, painted or poured with love, one order at a time.
+              At Utsaah — we create little things that bring big smiles.
+              From handmade crochet treasures to thoughtful gifts and custom creations, every piece is crafted with love, care, and a personal touch.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link to="/shop" className="btn-sticker bg-rani text-white px-7 py-3.5 hover:bg-rani-dark">

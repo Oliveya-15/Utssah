@@ -15,10 +15,25 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       const { data } = await api.post('/contact', form);
+
+      const body = `Name: ${form.name}
+Email: ${form.email}
+Phone: ${form.phone || 'Not provided'}
+
+Message:
+${form.message}`;
+
+      const mailto = `mailto:utsaaaah@gmail.com?subject=${encodeURIComponent(
+        form.subject
+      )}&body=${encodeURIComponent(body)}`;
+
       showToast(data.message, 'success');
       setForm({ name: '', email: '', phone: '', subject: 'General Inquiry', message: '' });
+
+      window.location.href = mailto;
     } catch (err) {
       showToast(err.message, 'error');
     } finally {
@@ -37,8 +52,8 @@ const Contact = () => {
       <div className="grid lg:grid-cols-[1fr_1.3fr] gap-8">
         <div className="space-y-4">
           {[
-            { icon: <Mail size={20} />, title: 'Email Us', value: 'hello@utsaah.com', bg: 'bg-blush' },
-            { icon: <Phone size={20} />, title: 'Call / WhatsApp', value: '+91 98765 43210', bg: 'bg-mint' },
+            { icon: <Mail size={20} />, title: 'Email Us', value: 'utsaaaah@gmail.com', bg: 'bg-blush' },
+            { icon: <Phone size={20} />, title: 'Call / WhatsApp', value: '+91 7430 063 257', bg: 'bg-mint' },
             { icon: <InstagramIcon size={20} />, title: 'Instagram', value: '@utsaah_._', bg: 'bg-lavender' },
           ].map((c) => (
             <div key={c.title} className={`${c.bg} rounded-3xl p-6 flex items-center gap-4`}>

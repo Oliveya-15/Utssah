@@ -12,23 +12,56 @@ const About = () => (
       <p className="font-hand text-3xl text-rani mb-2">our little story</p>
       <h1 className="font-display font-bold text-4xl sm:text-5xl text-ink mb-5">What is Utsaah?</h1>
       <p className="text-ink/60 max-w-xl mx-auto text-lg">
-        <span className="font-hand text-2xl text-mehendi">"Utsaah"</span> means enthusiasm, zeal, and joyful energy —
-        and that's exactly what goes into every stitch, bead and brushstroke of what we make.
+        <span className="font-hand text-2xl text-mehendi">"Utsaah"</span> means excitement, enthusiasm, and joyful energy — and that is exactly what Utsaah has been for us.
       </p>
     </section>
     <div style={{ '--scallop-color': '#FDEDE7' }}><ScallopDivider color="#FFF8EF" /></div>
 
-    <section className="max-w-4xl mx-auto px-4 sm:px-6 py-16 space-y-6 text-ink/70 leading-relaxed text-lg">
-      <p>
-        Utsaah began as a small hobby — a handful of crochet flowers made for friends and family — and slowly grew
-        into a home for handmade love. Every piece you find here is made to order, by hand, with the same care we'd
-        put into a gift for someone we adore.
-      </p>
-      <p>
-        We believe gifting should feel personal. That's why alongside our ready collection of crochet keepsakes,
-        customised gifts and cozy home decor, we also craft made-to-order pieces designed just for you — down to the
-        colours, the size, and the little details that make it truly yours.
-      </p>
+    {/* ── Story + Image section ── */}
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-20">
+      <div className="flex flex-col md:flex-row items-start gap-10 md:gap-14">
+
+        {/* Larger Image with soft curvy frame */}
+        <div className="relative shrink-0 w-full max-w-[320px] sm:max-w-[360px] md:w-[400px] mx-auto md:mx-0">
+          
+          {/* soft outer glow */}
+          <div className="absolute -inset-4 rounded-[3rem] bg-gradient-to-br from-rani/20 via-mehendi/15 to-blush/50 blur-md opacity-80" />
+          
+          {/* main elegant frame */}
+          <div className="relative rounded-[2.8rem] overflow-hidden border-[7px] border-white 
+                          shadow-[0_20px_50px_-12px_rgba(180,80,100,0.22)] 
+                          ring-1 ring-rani/10 bg-white">
+            <img
+              src="/images/Utsaah.jpeg"
+              alt="The two creators of Utsaah"
+              className="w-full aspect-[4/5] object-cover object-center"
+            />
+          </div>
+
+          {/* decorative heart accent */}
+          <div className="absolute -bottom-4 -right-4 w-16 h-16 rounded-full 
+                          bg-mint border-[5px] border-white shadow-lg 
+                          flex items-center justify-center">
+            <Heart size={20} className="text-rani fill-rani/30" />
+          </div>
+        </div>
+
+        {/* Text content with beautiful emphasis */}
+        <div className="flex-1 space-y-5 text-ink/70 leading-relaxed text-lg min-w-0 pt-1">
+          <p>
+            It is the dream of two girls who grew up with crayons, origami, colourful papers, stitches, model-making and endless art & craft experiments. From making <span className="font-hand text-xl text-mehendi">handmade gifts</span> for family and friends to dreaming of becoming fashion designers and owning our own <span className="font-semibold text-rani">creative space</span>, Utsaah began long before it had a name.
+          </p>
+          <p>
+            Like many Indian families, studies came first. Our creative dreams slowly took a back seat as we pursued our BCA and worked towards building a corporate career. But during our third year, we decided to give our <span className="font-hand text-xl text-mehendi">childhood dream</span> a little space again. What started as a simple hobby with an Instagram page and a few handmade creations soon turned into something we never expected.
+          </p>
+          <p>
+            Today, we have delivered <span className="font-semibold text-rani">100+ orders</span>, created customised pieces from our customers' ideas, and made products for people we never even knew before. The love from our friends, family, strangers and our wonderful repeat customers gave <span className="font-hand text-xl text-mehendi">Utsaah</span> its wings. And now, this website is our next step — bringing together our love for creativity and the tech skills we've learned along the way.
+          </p>
+          <p className="text-ink/80">
+            Utsaah is our little reminder that pursuing a dream doesn't mean leaving your responsibilities behind. You can study, build a career, and still make space for the things that make your <span className="font-hand text-xl text-rani">heart happy</span>. We are excited to keep creating, keep learning, and keep turning your ideas into little <span className="font-semibold text-mehendi">handmade joys</span>. This is only the beginning, and we're so happy to have you along for the journey. 💗
+          </p>
+        </div>
+      </div>
     </section>
 
     <section className="bg-mint py-16">

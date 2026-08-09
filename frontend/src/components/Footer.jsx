@@ -64,7 +64,7 @@ const Footer = () => {
               <span className="font-display font-bold text-xl text-white">Utsaah</span>
             </div>
             <p className="text-sm text-white/60 leading-relaxed">
-              Handcrafted with zeal — crochet, custom gifts &amp; decor made just for you.
+              Handcrafted with Love — crochet, custom gifts &amp; decor made just for you.
             </p>
             <a
               href="https://www.instagram.com/utsaah_._"
@@ -99,8 +99,8 @@ const Footer = () => {
           <div>
             <h4 className="font-display font-semibold text-white mb-3">Get in touch</h4>
             <ul className="space-y-2.5 text-sm text-white/60">
-              <li className="flex items-center gap-2"><Mail size={14} /> hello@utsaah.com</li>
-              <li className="flex items-center gap-2"><Phone size={14} /> +91 98765 43210</li>
+              <li className="flex items-center gap-2"><Mail size={14} /> utsaaaah@gmail.com</li>
+              <li className="flex items-center gap-2"><Phone size={14} /> +91 7430 063 257</li>
               <li className="flex items-center gap-2"><MapPin size={14} /> Made with love, shipped anywhere in India</li>
             </ul>
           </div>
