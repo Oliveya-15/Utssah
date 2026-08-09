@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { ArrowRight, Heart, Sparkles, Truck, PackageCheck } from 'lucide-react';
+import { ArrowRight, Heart, Sparkles, Truck, PackageCheck, Package, Gift, Home as HomeIcon } from 'lucide-react';
 import InstagramIcon from '../components/InstagramIcon.jsx';
 import api, { resolveImage } from '../api/axios.js';
 import ProductCard from '../components/ProductCard.jsx';
@@ -9,10 +9,10 @@ import ScallopDivider from '../components/ScallopDivider.jsx';
 import Loader from '../components/Loader.jsx';
 
 const CATEGORY_STYLES = {
-  'Crochet Items': { bg: 'bg-blush', icon: '🧶' },
-  'Customized Gifts': { bg: 'bg-butter', icon: '🎁' },
-  'Home Decor': { bg: 'bg-mint', icon: '🏡' },
-  'Handmade Products': { bg: 'bg-lavender', icon: '✨' },
+  'Crochet Items': { bg: 'bg-blush', icon: <Package size={40} className="text-ink" /> },
+  'Customized Gifts': { bg: 'bg-butter', icon: <Gift size={40} className="text-ink" /> },
+  'Home Decor': { bg: 'bg-mint', icon: <HomeIcon size={40} className="text-ink" /> },
+  'Handmade Products': { bg: 'bg-lavender', icon: <Sparkles size={40} className="text-ink" /> },
 };
 
 const Section = ({ id, bg = 'bg-canvas', children, scallopFrom, className = '' }) => (
@@ -87,22 +87,21 @@ const Home = () => {
               </Link>
             </div>
           </div>
-
           <div className="relative">
             <div className="absolute -top-6 -right-6 w-40 h-40 bg-marigold/30 rounded-blob animate-floaty hidden sm:block" />
             <div className="absolute -bottom-8 -left-4 w-32 h-32 bg-mehendi/20 rounded-blob animate-floaty hidden sm:block" style={{ animationDelay: '1.5s' }} />
             <div className="relative grid grid-cols-2 gap-4">
               <div className="rounded-3xl overflow-hidden shadow-card bg-white p-4 translate-y-6">
-                <img src={resolveImage('/uploads/products/placeholder-1.svg')} alt="Crochet handmade item" className="w-full aspect-square object-contain" />
+                <img src="/banner/pro1.png" alt="Crochet handmade item" className="w-full aspect-square object-contain" />
               </div>
               <div className="rounded-3xl overflow-hidden shadow-card bg-white p-4">
-                <img src={resolveImage('/uploads/products/placeholder-2.svg')} alt="Customised gift" className="w-full aspect-square object-contain" />
+                <img src="/banner/pro2.png" alt="Customised gift" className="w-full aspect-square object-contain" />
               </div>
               <div className="rounded-3xl overflow-hidden shadow-card bg-white p-4">
-                <img src={resolveImage('/uploads/products/placeholder-3.svg')} alt="Home decor item" className="w-full aspect-square object-contain" />
+                <img src="/banner/pro3.png" alt="Home decor item" className="w-full aspect-square object-contain" />
               </div>
               <div className="rounded-3xl overflow-hidden shadow-card bg-white p-4 translate-y-6">
-                <img src={resolveImage('/uploads/products/placeholder-4.svg')} alt="Handmade product" className="w-full aspect-square object-contain" />
+                <img src="/banner/pro4.png" alt="Handmade product" className="w-full aspect-square object-contain" />
               </div>
             </div>
           </div>
@@ -143,8 +142,8 @@ const Home = () => {
                   to={`/shop?category=${cat._id}`}
                   className={`${CATEGORY_STYLES[cat.name]?.bg || 'bg-blush'} rounded-3xl p-6 text-center hover:-translate-y-1 transition-transform shadow-soft group`}
                 >
-                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform inline-block">
-                    {cat.icon || CATEGORY_STYLES[cat.name]?.icon || '🧶'}
+                  <div className="mb-3 group-hover:scale-110 transition-transform inline-block">
+                    {CATEGORY_STYLES[cat.name]?.icon || <Sparkles size={40} className="text-ink" />}
                   </div>
                   <h3 className="font-display font-semibold text-ink text-sm sm:text-base">{cat.name}</h3>
                 </Link>
@@ -201,9 +200,20 @@ const Home = () => {
                 </Link>
               </div>
               <div className="grid grid-cols-3 gap-3">
-                {['🧸', '💐', '🎀'].map((emoji, i) => (
-                  <div key={i} className={`aspect-square rounded-3xl bg-white/10 flex items-center justify-center text-5xl ${i === 1 ? '-translate-y-4' : ''}`}>
-                    {emoji}
+                {[
+                  { src: '/cat/p1.jpg', alt: 'Custom order 1' },
+                  { src: '/cat/p2.jpg', alt: 'Custom order 2' },
+                  { src: '/cat/p3.jpg', alt: 'Custom order 3' },
+                ].map((img, i) => (
+                  <div
+                    key={i}
+                    className={`aspect-square rounded-3xl bg-white/10 overflow-hidden ${i === 1 ? '-translate-y-4' : ''}`}
+                  >
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 ))}
               </div>
@@ -215,8 +225,12 @@ const Home = () => {
             <SectionHeading eyebrow="follow along" title="Utsaah on Instagram" subtitle="Behind-the-scenes crafting, new drops &amp; happy customers." center />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="aspect-square rounded-3xl bg-blush flex items-center justify-center text-4xl overflow-hidden relative group">
-                  {['🧶', '🎁', '🏡', '✨'][i - 1]}
+                <div key={i} className="aspect-square rounded-3xl bg-blush flex items-center justify-center overflow-hidden relative group">
+                  <img
+                    src={`/uinsta/u${i}.png`}
+                    alt={`Utsaah Instagram ${i}`}
+                    className="w-full h-full object-cover"
+                  />
                   <div className="absolute inset-0 bg-ink/0 group-hover:bg-ink/40 transition-colors flex items-center justify-center">
                     <InstagramIcon className="text-white opacity-0 group-hover:opacity-100 transition-opacity" size={26} />
                   </div>
