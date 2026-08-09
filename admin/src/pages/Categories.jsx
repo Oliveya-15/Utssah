@@ -85,7 +85,9 @@ const Categories = () => {
         {categories.map((c) => (
           <div key={c._id} className="bg-white rounded-3xl p-5 shadow-soft">
             <div className="flex items-start justify-between mb-3">
-              <span className="text-3xl">{c.icon || '🧶'}</span>
+              <span className="text-3xl">
+                <img src="/favicon.png" alt="Utsaah" className="h-8 w-auto inline-block" />
+              </span>
               <div className="flex gap-1">
                 <button onClick={() => openEdit(c)} className="w-8 h-8 rounded-full hover:bg-blush flex items-center justify-center text-ink/40 hover:text-rani"><Edit2 size={14} /></button>
                 <button onClick={() => handleDelete(c._id)} className="w-8 h-8 rounded-full hover:bg-blush flex items-center justify-center text-ink/40 hover:text-rani"><Trash2 size={14} /></button>

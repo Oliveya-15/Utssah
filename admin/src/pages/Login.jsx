@@ -35,7 +35,7 @@ const Login = () => {
     <div className="min-h-screen bg-indigo_ink flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-card p-8 sm:p-10">
         <div className="text-center mb-8">
-          <span className="text-4xl">🧶</span>
+          <img src="/favicon.png" alt="Utsaah" className="h-12 w-auto inline-block" />
           <h1 className="font-display font-bold text-2xl text-ink mt-2">Utsaah Admin</h1>
           <p className="text-ink/50 text-sm mt-1 flex items-center justify-center gap-1.5">
             <ShieldCheck size={14} /> Authorised personnel only

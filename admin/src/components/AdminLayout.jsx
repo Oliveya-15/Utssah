@@ -31,13 +31,11 @@ const AdminLayout = () => {
 
   const SidebarContent = () => (
     <>
-      <div className="flex items-center gap-2 px-5 py-6">
-        <span className="text-2xl">🧶</span>
-        <div>
-          <p className="font-display font-bold text-lg text-white leading-none">Utsaah</p>
-          <p className="text-[11px] text-white/40">Admin Panel</p>
-        </div>
+      <div className="px-5 py-6 flex flex-col items-start gap-1">
+        <img src="/navbar_logo_white.svg" alt="Utsaah" className="h-10 w-auto" />
+        <p className="text-[12px] text-white/40 ml-3">Admin Panel</p>
       </div>
+
       <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
         {navItems.map((item) => (
           <NavLink
@@ -46,8 +44,7 @@ const AdminLayout = () => {
             end={item.end}
             onClick={() => setMobileOpen(false)}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-display font-semibold transition-colors ${
-                isActive ? 'bg-rani text-white' : 'text-white/60 hover:bg-white/5 hover:text-white'
+              `flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-display font-semibold transition-colors ${isActive ? 'bg-rani text-white' : 'text-white/60 hover:bg-white/5 hover:text-white'
               }`
             }
           >
@@ -92,7 +89,7 @@ const AdminLayout = () => {
       <div className="flex-1 min-w-0 flex flex-col">
         <header className="lg:hidden sticky top-0 z-30 bg-indigo_ink px-4 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-xl">🧶</span>
+            <img src="/favicon_white.svg" alt="Utsaah" className="h-8 w-auto inline-block" />
             <span className="font-display font-bold text-white">Utsaah Admin</span>
           </div>
           <button onClick={() => setMobileOpen(true)} className="text-white"><Menu size={22} /></button>
