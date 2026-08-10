@@ -2,14 +2,15 @@ import express from 'express';
 import { protect, admin } from '../middleware/auth.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import {
-  createPaymentOrder, verifyAndPlaceOrder, getMyOrders, getOrderById, cancelOrder, reorder,
+  placeOrder, reportPayment, verifyPayment, getMyOrders, getOrderById, cancelOrder, reorder,
   getAllOrdersAdmin, updateOrderStatus, getRevenueDashboard, getCrmDashboard,
 } from '../controllers/orderController.js';
 
 const router = express.Router();
 
-router.post('/create-payment-order', protect, asyncHandler(createPaymentOrder));
-router.post('/verify-and-place', protect, asyncHandler(verifyAndPlaceOrder));
+router.post('/place', protect, asyncHandler(placeOrder));
+router.put('/:id/report-payment', protect, asyncHandler(reportPayment));
+router.put('/:id/verify-payment', protect, admin, asyncHandler(verifyPayment));
 router.get('/my', protect, asyncHandler(getMyOrders));
 router.get('/admin/all', protect, admin, asyncHandler(getAllOrdersAdmin));
 router.get('/admin/dashboard/revenue', protect, admin, asyncHandler(getRevenueDashboard));

@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, MapPin, Package, Truck } from 'lucide-react';
+import { ArrowLeft, MapPin, Package, Truck, CheckCircle2, Landmark } from 'lucide-react';
 import api, { resolveImage } from '../api/axios.js';
 import { useToast } from '../context/ToastContext.jsx';
 import Loader from '../components/Loader.jsx';
 import StatusPill from '../components/StatusPill.jsx';
 
 const ORDER_STATUSES = [
-  'Order Received', 'Payment Successful', 'Confirmation Sent', 'Acknowledgement Pending',
+  'Order Received', 'Payment Reported', 'Payment Successful', 'Confirmation Sent', 'Acknowledgement Pending',
   'Production Started', 'Gift Packaging', 'Packed', 'Shipping Assigned', 'Shipped', 'Delivered', 'Completed',
 ];
 
@@ -23,19 +23,41 @@ const OrderDetail = () => {
   const [trackingNumber, setTrackingNumber] = useState('');
   const [adminNote, setAdminNote] = useState('');
   const [saving, setSaving] = useState(false);
+  const [verifying, setVerifying] = useState(false);
 
-  const fetchOrder = () => {
-    api.get(`/orders/${id}`).then((res) => {
-      setOrder(res.data);
-      setStatus(res.data.orderStatus);
-      setShippingProvider(res.data.shippingProvider || '');
-      setCourierPartner(res.data.courierPartner || '');
-      setTrackingNumber(res.data.trackingNumber || '');
-      setAdminNote(res.data.adminNote || '');
-      setLoading(false);
-    });
+  const fetchOrder = useCallback(() => {
+    api.get(`/orders/${id}`)
+      .then((res) => {
+        setOrder(res.data);
+        setStatus(res.data.orderStatus);
+        setShippingProvider(res.data.shippingProvider || '');
+        setCourierPartner(res.data.courierPartner || '');
+        setTrackingNumber(res.data.trackingNumber || '');
+        setAdminNote(res.data.adminNote || '');
+        setLoading(false);
+      })
+      .catch((err) => {
+        showToast(err.response?.data?.message || err.message, 'error');
+        setLoading(false);
+      });
+  }, [id, showToast]);
+
+  useEffect(() => {
+    fetchOrder();
+  }, [fetchOrder]);
+
+  const handleVerifyPayment = async () => {
+    setVerifying(true);
+    try {
+      await api.put(`/orders/${id}/verify-payment`);
+      showToast('Payment verified — customer notified ✅', 'success');
+      fetchOrder();
+    } catch (err) {
+      showToast(err.response?.data?.message || err.message, 'error');
+    } finally {
+      setVerifying(false);
+    }
   };
-  useEffect(fetchOrder, [id]);
 
   const handleUpdate = async () => {
     setSaving(true);
@@ -45,7 +67,7 @@ const OrderDetail = () => {
       setNote('');
       fetchOrder();
     } catch (err) {
-      showToast(err.message, 'error');
+      showToast(err.response?.data?.message || err.message, 'error');
     } finally {
       setSaving(false);
     }
@@ -56,7 +78,9 @@ const OrderDetail = () => {
 
   return (
     <div>
-      <Link to="/orders" className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink/50 hover:text-rani mb-4"><ArrowLeft size={15} /> Back to Orders</Link>
+      <Link to="/orders" className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink/50 hover:text-rani mb-4">
+        <ArrowLeft size={15} /> Back to Orders
+      </Link>
 
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div>
@@ -66,15 +90,36 @@ const OrderDetail = () => {
         <StatusPill status={order.orderStatus} />
       </div>
 
+      {order.paymentStatus === 'pending' ? (
+        <div className="bg-butter rounded-2xl p-4 mb-6 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm font-semibold text-marigold-dark flex items-center gap-2">
+            <Landmark size={16} />
+            {order.orderStatus === 'Payment Reported'
+              ? `Customer reported payment of ₹${order.totalAmount} — please confirm you've received it before verifying.`
+              : `Awaiting payment of ₹${order.totalAmount} via ${order.paymentMethod === 'upi' ? `UPI${order.upiOwnerUsed ? ` (to ${order.upiOwnerUsed})` : ''}` : 'WhatsApp'}.`}
+          </p>
+          <button onClick={handleVerifyPayment} disabled={verifying} className="btn-sticker bg-mehendi text-white px-4 py-2 text-xs shrink-0 disabled:opacity-60 flex items-center gap-1.5">
+            <CheckCircle2 size={14} /> {verifying ? 'Verifying…' : 'Mark Payment Verified'}
+          </button>
+        </div>
+      ) : (
+        <div className="bg-mint rounded-2xl p-4 mb-6 text-sm font-semibold text-mehendi-dark flex items-center gap-2">
+          <CheckCircle2 size={16} /> Payment verified{order.paymentVerifiedAt ? ` on ${new Date(order.paymentVerifiedAt).toLocaleString()}` : ''}
+          {order.upiOwnerUsed && ` · via ${order.upiOwnerUsed}'s UPI`}
+        </div>
+      )}
+
       <div className="grid lg:grid-cols-[1fr_360px] gap-6">
         <div className="space-y-6">
           <div className="bg-white rounded-3xl p-6 shadow-soft">
-            <h3 className="font-display font-bold text-lg text-ink mb-4 flex items-center gap-2"><Package size={17} className="text-rani" /> Items</h3>
+            <h3 className="font-display font-bold text-lg text-ink mb-4 flex items-center gap-2">
+              <Package size={17} className="text-rani" /> Items
+            </h3>
             <div className="space-y-3">
               {order.items.map((item, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <div className="w-14 h-14 rounded-xl bg-blush shrink-0 overflow-hidden">
-                    <img src={resolveImage(item.image)} alt="" className="w-full h-full object-contain p-1.5" />
+                    <img src={resolveImage(item.image)} alt={item.name} className="w-full h-full object-contain p-1.5" />
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-ink">{item.name}</p>
@@ -86,19 +131,25 @@ const OrderDetail = () => {
           </div>
 
           <div className="bg-white rounded-3xl p-6 shadow-soft">
-            <h3 className="font-display font-bold text-lg text-ink mb-4 flex items-center gap-2"><MapPin size={17} className="text-rani" /> Delivery Address</h3>
-            <p className="text-sm font-semibold text-ink">{order.address.fullName}</p>
-            <p className="text-sm text-ink/60">{order.address.fullAddress}, {order.address.city}, {order.address.state} {order.address.postalCode}</p>
-            <p className="text-sm text-ink/50 mt-1">{order.address.phone}</p>
-            {order.address.latitude && (
+            <h3 className="font-display font-bold text-lg text-ink mb-4 flex items-center gap-2">
+              <MapPin size={17} className="text-rani" /> Delivery Address
+            </h3>
+            <p className="text-sm font-semibold text-ink">{order.address?.fullName}</p>
+            <p className="text-sm text-ink/60">{order.address?.fullAddress}, {order.address?.city}, {order.address?.state} {order.address?.postalCode}</p>
+            <p className="text-sm text-ink/50 mt-1">{order.address?.phone}</p>
+            
+            {/* FIXED: Added missing '<a' */}
+            {order.address?.latitude && (
               <a
                 href={`https://www.google.com/maps?q=${order.address.latitude},${order.address.longitude}`}
-                target="_blank" rel="noopener noreferrer"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-xs font-semibold text-rani hover:underline mt-2 inline-block"
               >
                 View on Google Maps →
               </a>
             )}
+            
             {order.giftWrap && <p className="text-xs mt-3 bg-butter text-marigold-dark inline-block px-2.5 py-1 rounded-full font-semibold">🎀 Gift Wrap Requested</p>}
             {order.giftNote && <p className="text-sm text-ink/60 mt-2 italic">"{order.giftNote}"</p>}
 

@@ -1,7 +1,7 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Package, Layers, ShoppingBag, Users, Tag, RotateCcw,
-  Sparkles, Star, MessageSquare, LogOut, Menu, X,
+  Sparkles, Star, MessageSquare, LogOut, Menu, X, Settings as SettingsIcon,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAdminAuth } from '../context/AdminAuthContext.jsx';
@@ -17,6 +17,7 @@ const navItems = [
   { to: '/custom-requests', label: 'Custom Requests', icon: Sparkles },
   { to: '/reviews', label: 'Reviews', icon: Star },
   { to: '/messages', label: 'Messages', icon: MessageSquare },
+  { to: '/settings', label: 'Payment Settings', icon: SettingsIcon },
 ];
 
 const AdminLayout = () => {
@@ -44,7 +45,8 @@ const AdminLayout = () => {
             end={item.end}
             onClick={() => setMobileOpen(false)}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-display font-semibold transition-colors ${isActive ? 'bg-rani text-white' : 'text-white/60 hover:bg-white/5 hover:text-white'
+              `flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-display font-semibold transition-colors ${
+                isActive ? 'bg-rani text-white' : 'text-white/60 hover:bg-white/5 hover:text-white'
               }`
             }
           >

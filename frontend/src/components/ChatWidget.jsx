@@ -17,6 +17,7 @@ const FAQS = [
   { keywords: ['contact', 'whatsapp', 'phone', 'call', 'email'], answer: 'You can reach our team anytime via the Contact page, or email hello@utsaah.com — we typically respond within a business day 💌' },
   { keywords: ['material', 'yarn', 'fabric', 'made of'], answer: 'Our crochet pieces are handmade using soft, skin-friendly cotton and acrylic yarns. Exact material is listed under Specifications on each product page 🧵' },
   { keywords: ['track', 'order status', 'where is my order'], answer: 'You can track your order\u2019s live status — from crafting to shipping — anytime from My Orders → Order Details 📍' },
+  { keywords: ['payment', 'pay', 'upi', 'card', 'qr'], answer: 'We keep payments simple — just scan our UPI QR code at checkout with any UPI app (GPay, PhonePe, Paytm...) and tap "I\'ve Paid" once done. Prefer to chat first? Choose "Confirm on WhatsApp" instead 💬' },
 ];
 
 const DEFAULT_ANSWER =

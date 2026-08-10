@@ -136,7 +136,7 @@ export const processRefund = async (req, res) => {
   res.json(returnReq);
 };
 
-// @desc Admin marks an "original payment method" refund as completed (after actually processing it via Razorpay/bank)
+// @desc Admin marks an "original payment method" refund as completed (after actually sending it back via UPI/bank transfer)
 // @route PUT /api/returns/:id/complete
 export const markRefundCompleted = async (req, res) => {
   const returnReq = await ReturnRequest.findById(req.params.id);

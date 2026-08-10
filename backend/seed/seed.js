@@ -10,6 +10,7 @@ import Product from '../models/Product.js';
 import Coupon from '../models/Coupon.js';
 import Cart from '../models/Cart.js';
 import Wishlist from '../models/Wishlist.js';
+import Settings from '../models/Settings.js';
 
 dotenv.config();
 
@@ -231,6 +232,22 @@ const importData = async () => {
   }
 
   console.log('\n🌸 Seeding complete!');
+  // ---- Settings (UPI owners + WhatsApp) ----
+  const existingSettings = await Settings.findOne();
+  if (!existingSettings) {
+    await Settings.create({
+      businessName: 'Utsaah',
+      ownerOneName: 'Owner 1',
+      ownerOneUpiId: '',
+      ownerTwoName: 'Owner 2',
+      ownerTwoUpiId: '',
+      activeOwner: 'one',
+      whatsappNumber: '',
+    });
+    console.log('✔ Default settings created — fill in UPI IDs & WhatsApp number from Admin → Settings');
+  } else {
+    console.log('• Settings already exist, skipping.');
+  }
   process.exit();
 };
 

@@ -1,22 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { MapPin, Gift, Wallet, Tag, Plus, LocateFixed, CheckCircle2 } from 'lucide-react';
+import { MapPin, Gift, Wallet, Tag, Plus, LocateFixed, CheckCircle2, MessageCircle, QrCode, ArrowRight } from 'lucide-react';
 import api, { resolveImage } from '../api/axios.js';
 import { useCart } from '../context/CartContext.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useToast } from '../context/ToastContext.jsx';
 import Loader from '../components/Loader.jsx';
-
-const loadRazorpayScript = () =>
-  new Promise((resolve) => {
-    if (window.Razorpay) return resolve(true);
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.onload = () => resolve(true);
-    script.onerror = () => resolve(false);
-    document.body.appendChild(script);
-  });
+import UpiQrPayment from '../components/UpiQrPayment.jsx';
 
 const emptyAddress = { label: 'Home', fullName: '', phone: '', fullAddress: '', city: '', state: '', country: 'India', postalCode: '' };
 
@@ -40,18 +31,22 @@ const Checkout = () => {
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [useWallet, setUseWallet] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [placing, setPlacing] = useState(false);
+  const [placing, setPlacing] = useState('');
+  const [confirming, setConfirming] = useState(false);
+  const [settings, setSettings] = useState(null);
+  const [placedOrder, setPlacedOrder] = useState(null);
 
   useEffect(() => {
-    if (items.length === 0) {
+    if (items.length === 0 && !placedOrder) {
       navigate('/cart');
       return;
     }
-    api.get('/users/addresses').then((res) => {
-      setAddresses(res.data);
-      const def = res.data.find((a) => a.isDefault) || res.data[0];
+    Promise.all([api.get('/users/addresses'), api.get('/settings')]).then(([addrRes, settingsRes]) => {
+      setAddresses(addrRes.data);
+      const def = addrRes.data.find((a) => a.isDefault) || addrRes.data[0];
       if (def) setSelectedAddressId(def._id);
       else setShowAddressForm(true);
+      setSettings(settingsRes.data);
       setLoading(false);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -113,92 +108,87 @@ const Checkout = () => {
     }
   };
 
-  const handlePlaceOrder = async () => {
+  const handlePlaceOrder = async (paymentMethod) => {
     if (!selectedAddressId) {
       showToast('Please select or add a delivery address', 'error');
       return;
     }
-    setPlacing(true);
+    setPlacing(paymentMethod);
     try {
-      const { data: payOrder } = await api.post('/orders/create-payment-order', {
+      const { data: order } = await api.post('/orders/place', {
         addressId: selectedAddressId,
         couponCode: appliedCoupon?.code || '',
-        giftWrap,
-        giftNote,
-        chocolateAddon,
-        useWallet,
+        giftWrap, giftNote, chocolateAddon, useWallet, paymentMethod,
       });
 
-      const commonFields = {
-        addressId: selectedAddressId,
-        couponCode: payOrder.couponCode,
-        couponDiscount: payOrder.couponDiscount,
-        giftWrap: payOrder.giftWrap,
-        giftNote: payOrder.giftNote,
-        chocolateAddon: payOrder.chocolateAddon,
-        walletUsed: payOrder.walletUsed,
-        itemsTotal: payOrder.itemsTotal,
-        totalAmount: payOrder.totalAmount,
-      };
+      if (order.walletUsed) updateUserLocal({ walletBalance: walletAvailable - order.walletUsed });
+      await clearCart();
 
-      if (!payOrder.razorpayOrder) {
-        // Fully covered by wallet balance — no payment gateway needed
-        const { data: order } = await api.post('/orders/verify-and-place', { ...commonFields, skipPayment: true });
-        updateUserLocal({ walletBalance: walletAvailable - payOrder.walletUsed });
-        await clearCart();
+      if (order.paymentStatus === 'paid') {
+        // fully covered by wallet balance — nothing left to pay
         showToast('Order placed successfully! 🎉', 'success');
         navigate(`/profile/orders/${order._id}`);
         return;
       }
 
-      const scriptLoaded = await loadRazorpayScript();
-      if (!scriptLoaded) {
-        showToast('Could not load payment gateway. Check your internet connection.', 'error');
-        setPlacing(false);
-        return;
+      if (paymentMethod === 'upi') {
+        setPlacedOrder(order);
+      } else {
+        const message = `Hi! I've placed order ${order.orderNumber} on Utsaah for ₹${order.totalAmount}. I'd like to confirm the details before paying.`;
+        window.open(`https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+        showToast('Order reserved — see you on WhatsApp! 💬', 'success');
+        navigate(`/profile/orders/${order._id}`);
       }
-
-      const rzp = new window.Razorpay({
-        key: payOrder.keyId,
-        amount: payOrder.razorpayOrder.amount,
-        currency: 'INR',
-        name: 'Utsaah',
-        description: 'Handcrafted with love',
-        order_id: payOrder.razorpayOrder.id,
-        theme: { color: '#D6336C' },
-        handler: async (response) => {
-          try {
-            const { data: order } = await api.post('/orders/verify-and-place', {
-              ...commonFields,
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-            });
-            if (payOrder.walletUsed) updateUserLocal({ walletBalance: walletAvailable - payOrder.walletUsed });
-            await clearCart();
-            showToast('Payment successful! Order placed 🎉', 'success');
-            navigate(`/profile/orders/${order._id}`);
-          } catch (err) {
-            showToast(err.message || 'Payment verification failed', 'error');
-          } finally {
-            setPlacing(false);
-          }
-        },
-        modal: { ondismiss: () => setPlacing(false) },
-        prefill: { name: user?.name, email: user?.email },
-      });
-      rzp.on('payment.failed', () => {
-        showToast('Payment failed. Please try again.', 'error');
-        setPlacing(false);
-      });
-      rzp.open();
     } catch (err) {
       showToast(err.message, 'error');
-      setPlacing(false);
+    } finally {
+      setPlacing('');
+    }
+  };
+
+  const handleConfirmPaid = async () => {
+    setConfirming(true);
+    try {
+      await api.put(`/orders/${placedOrder._id}/report-payment`);
+      showToast("Thanks! We'll confirm your payment shortly 💛", 'success');
+      navigate(`/profile/orders/${placedOrder._id}`);
+    } catch (err) {
+      showToast(err.message, 'error');
+    } finally {
+      setConfirming(false);
     }
   };
 
   if (loading) return <Loader fullScreen />;
+
+  // ---- Payment step: order already placed, waiting on UPI confirmation ----
+  if (placedOrder) {
+    return (
+      <div className="max-w-md mx-auto px-4 sm:px-6 py-12">
+        <Helmet><title>Complete Payment — Utsaah</title></Helmet>
+        <div className="text-center mb-6">
+          <p className="text-4xl mb-2">🎉</p>
+          <h1 className="font-display font-bold text-2xl text-ink">Order #{placedOrder.orderNumber} reserved!</h1>
+          <p className="text-ink/50 text-sm mt-1">Complete your payment below and we'll get started right away.</p>
+        </div>
+        <UpiQrPayment
+          upiId={settings.activeUpiId}
+          ownerName={settings.activeOwnerName}
+          amount={placedOrder.totalAmount}
+          orderNumber={placedOrder.orderNumber}
+          whatsappNumber={settings.whatsappNumber}
+          onConfirmPaid={handleConfirmPaid}
+          confirming={confirming}
+        />
+        <Link to={`/profile/orders/${placedOrder._id}`} className="block text-center text-sm font-semibold text-ink/40 hover:text-rani mt-5">
+          I'll pay later — take me to my order →
+        </Link>
+      </div>
+    );
+  }
+
+  const upiReady = settings?.upiConfigured;
+  const whatsappReady = !!settings?.whatsappNumber;
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
@@ -365,14 +355,36 @@ const Checkout = () => {
             <span>Total</span><span>₹{total}</span>
           </div>
 
-          <button
-            onClick={handlePlaceOrder}
-            disabled={placing}
-            className="btn-sticker bg-rani text-white w-full py-3.5 hover:bg-rani-dark disabled:opacity-60"
-          >
-            {placing ? 'Processing…' : total === 0 ? 'Place Order' : `Pay ₹${total}`}
-          </button>
-          <p className="text-center text-[11px] text-ink/40 mt-3">🔒 Secured payments powered by Razorpay</p>
+          {total === 0 ? (
+            <button
+              onClick={() => handlePlaceOrder('upi')}
+              disabled={!!placing}
+              className="btn-sticker bg-rani text-white w-full py-3.5 hover:bg-rani-dark disabled:opacity-60"
+            >
+              {placing ? 'Placing order…' : 'Place Order (covered by wallet)'}
+            </button>
+          ) : (
+            <div className="space-y-2.5">
+              <button
+                onClick={() => handlePlaceOrder('upi')}
+                disabled={!!placing || !upiReady}
+                className="btn-sticker bg-rani text-white w-full py-3.5 hover:bg-rani-dark disabled:opacity-60"
+              >
+                <QrCode size={18} /> {placing === 'upi' ? 'Preparing QR…' : `Pay ₹${total} via UPI`}
+              </button>
+              <button
+                onClick={() => handlePlaceOrder('whatsapp')}
+                disabled={!!placing || !whatsappReady}
+                className="btn-sticker bg-mehendi text-white w-full py-3.5 hover:bg-mehendi-dark disabled:opacity-60"
+              >
+                <MessageCircle size={18} /> {placing === 'whatsapp' ? 'Reserving…' : 'Confirm on WhatsApp First'} <ArrowRight size={15} />
+              </button>
+              {!upiReady && !whatsappReady && (
+                <p className="text-xs text-rani text-center pt-1">Payment isn't set up yet — please try again shortly.</p>
+              )}
+            </div>
+          )}
+          <p className="text-center text-[11px] text-ink/40 mt-3">🧡 Small-batch, handmade — pay directly via UPI, no middleman</p>
         </div>
       </div>
     </div>

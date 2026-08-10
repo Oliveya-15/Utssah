@@ -16,6 +16,7 @@ import CustomRequests from './pages/CustomRequests.jsx';
 import Reviews from './pages/Reviews.jsx';
 import Messages from './pages/Messages.jsx';
 import NotFound from './pages/NotFound.jsx';
+import Settings from './pages/Settings.jsx';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
         <Route path="reviews" element={<Reviews />} />
         <Route path="messages" element={<Messages />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="settings" element={<Settings />} />
       </Route>
     </Routes>
   );
