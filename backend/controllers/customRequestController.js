@@ -6,7 +6,7 @@ import { notifyUser } from '../utils/notify.js';
 export const createCustomRequest = async (req, res) => {
   try {
     const { name, email, phone, productType, preferredColors, preferredSize, notes, contactPreference } = req.body;
-    const inspirationImages = (req.files || []).map((f) => `/uploads/custom-requests/${f.filename}`);
+    const inspirationImages = (req.files || []).map((f) => f.path);
 
     const request = await CustomRequest.create({
       user: req.user ? req.user._id : null,

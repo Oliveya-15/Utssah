@@ -1,28 +1,26 @@
 import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import cloudinary from '../config/cloudinary.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const makeStorage = (subfolder) => {
-  const dest = path.join(__dirname, '..', 'uploads', subfolder);
-  if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
-  return multer.diskStorage({
-    destination: (req, file, cb) => cb(null, dest),
-    filename: (req, file, cb) => {
-      const ext = path.extname(file.originalname);
-      const base = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9-_]/g, '');
-      cb(null, `${base}-${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
+// Images are uploaded straight to Cloudinary (not local disk) because
+// Render's filesystem is ephemeral — anything written to disk at runtime
+// is wiped on every redeploy/restart. Cloudinary's free tier gives
+// permanent, always-on storage instead, and req.file(.path) comes back as
+// a full https URL that the frontend already knows how to use as-is.
+const makeStorage = (folder) =>
+  new CloudinaryStorage({
+    cloudinary,
+    params: {
+      folder: `utsaah/${folder}`,
+      allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif'],
+      transformation: [{ width: 2000, height: 2000, crop: 'limit' }],
     },
   });
-};
 
 const imageFilter = (req, file, cb) => {
   const allowed = /jpeg|jpg|png|webp|gif/;
-  const extOk = allowed.test(path.extname(file.originalname).toLowerCase());
   const mimeOk = allowed.test(file.mimetype);
-  if (extOk && mimeOk) cb(null, true);
+  if (mimeOk) cb(null, true);
   else cb(new Error('Only image files (jpg, jpeg, png, webp, gif) are allowed'));
 };
 

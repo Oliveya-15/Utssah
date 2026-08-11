@@ -24,7 +24,7 @@ export const requestReturn = async (req, res) => {
     const existing = await ReturnRequest.findOne({ order: order._id });
     if (existing) return res.status(400).json({ message: 'A return request already exists for this order' });
 
-    const images = (req.files || []).map((f) => `/uploads/reviews/${f.filename}`);
+    const images = (req.files || []).map((f) => f.path);
 
     const returnReq = await ReturnRequest.create({
       order: order._id,

@@ -73,7 +73,7 @@ export const getAllProductsAdmin = async (req, res) => {
 export const createProduct = async (req, res) => {
   try {
     const body = req.body;
-    const images = (req.files || []).map((f) => `/uploads/products/${f.filename}`);
+    const images = (req.files || []).map((f) => f.path);
 
     let specifications = [];
     if (body.specifications) {
@@ -142,7 +142,7 @@ export const updateProduct = async (req, res) => {
       }
     }
 
-    const newImages = (req.files || []).map((f) => `/uploads/products/${f.filename}`);
+    const newImages = (req.files || []).map((f) => f.path);
     if (newImages.length > 0) {
       // If keepImages provided (existing images to retain), respect it; otherwise append
       if (body.keepImages) {

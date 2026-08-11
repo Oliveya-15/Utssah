@@ -20,7 +20,7 @@ export const getAllCategoriesAdmin = async (req, res) => {
 export const createCategory = async (req, res) => {
   try {
     const { name, description, icon, displayOrder } = req.body;
-    const image = req.file ? `/uploads/categories/${req.file.filename}` : '';
+    const image = req.file ? req.file.path : '';
     const category = await Category.create({ name, description, icon, displayOrder, image });
     res.status(201).json(category);
   } catch (error) {
@@ -40,7 +40,7 @@ export const updateCategory = async (req, res) => {
     if (icon !== undefined) category.icon = icon;
     if (displayOrder !== undefined) category.displayOrder = displayOrder;
     if (isActive !== undefined) category.isActive = isActive;
-    if (req.file) category.image = `/uploads/categories/${req.file.filename}`;
+    if (req.file) category.image = req.file.path;
     await category.save();
     res.json(category);
   } catch (error) {

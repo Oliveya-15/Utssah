@@ -30,7 +30,7 @@ export const createReview = async (req, res) => {
     const existing = await Review.findOne({ user: req.user._id, product: productId });
     if (existing) return res.status(400).json({ message: 'You already reviewed this product' });
 
-    const images = (req.files || []).map((f) => `/uploads/reviews/${f.filename}`);
+    const images = (req.files || []).map((f) => f.path);
 
     const review = await Review.create({
       user: req.user._id,
