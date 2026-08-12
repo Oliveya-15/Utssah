@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
-import ChatWidget from './components/ChatWidget.jsx';
+//import ChatWidget from './components/ChatWidget.jsx';
 import ScrollToTop from './components/ScrollToTop.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 
@@ -63,7 +63,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
-      <ChatWidget />
+      {/* <ChatWidget /> */}
     </div>
   );
 }
