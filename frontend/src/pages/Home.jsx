@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { ArrowRight, Heart, Sparkles, Truck, PackageCheck, Package, Gift, Home as HomeIcon } from 'lucide-react';
+import { ArrowRight, Heart, Sparkles, Truck, PackageCheck, Package, Gift, Home as HomeIcon, Scissors, Star } from 'lucide-react';
 import InstagramIcon from '../components/InstagramIcon.jsx';
 import api, { resolveImage } from '../api/axios.js';
 import ProductCard from '../components/ProductCard.jsx';
@@ -56,16 +56,39 @@ const Home = () => {
           name="description"
           content="Utsaah brings you handmade crochet, personalised gifts and cozy home decor — crafted with love, made to order, just for you."
         />
+        {/* Display serif used only for the hero tagline — professional, warm, theme-appropriate */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;0,900;1,600&display=swap"
+          rel="stylesheet"
+        />
       </Helmet>
 
       {/* ---------------- HERO ---------------- */}
       <section className="relative overflow-hidden bg-blush">
+        <style>{`
+          @keyframes utsaah-mandala-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+          .utsaah-mandala-spin {
+            animation: utsaah-mandala-spin 70s linear infinite;
+            will-change: transform;
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .utsaah-mandala-spin { animation: none; }
+          }
+        `}</style>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-14 pb-20 sm:pt-20 sm:pb-28 grid md:grid-cols-2 gap-10 items-center">
           <div className="relative z-10">
             <span className="inline-flex items-center gap-1.5 bg-white/80 backdrop-blur px-3.5 py-1.5 rounded-full text-xs font-display font-semibold text-rani shadow-soft mb-5">
               <Sparkles size={14} /> 100% Handmade · Made To Order
             </span>
-            <h1 className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl text-ink leading-[1.08] mb-5">
+            <h1
+              className="font-bold text-4xl sm:text-5xl lg:text-6xl text-ink leading-[1.08] tracking-tight mb-5"
+              style={{ fontFamily: "'Fraunces', ui-serif, Georgia, 'Times New Roman', serif" }}
+            >
               Chhoti <span className="text-rani">Chotti</span>
               <br /> Khushiyan <span className="relative inline-block">
                 Chuno...
@@ -88,21 +111,30 @@ const Home = () => {
             </div>
           </div>
           <div className="relative">
-            <div className="absolute -top-6 -right-6 w-40 h-40 bg-marigold/30 rounded-blob animate-floaty hidden sm:block" />
-            <div className="absolute -bottom-8 -left-4 w-32 h-32 bg-mehendi/20 rounded-blob animate-floaty hidden sm:block" style={{ animationDelay: '1.5s' }} />
-            <div className="relative grid grid-cols-2 gap-4">
-              <div className="rounded-3xl overflow-hidden shadow-card bg-white p-4 translate-y-6">
-                <img src="/banner/pro1.png" alt="Crochet handmade item" className="w-full aspect-square object-contain" />
-              </div>
-              <div className="rounded-3xl overflow-hidden shadow-card bg-white p-4">
-                <img src="/banner/pro2.png" alt="Customised gift" className="w-full aspect-square object-contain" />
-              </div>
-              <div className="rounded-3xl overflow-hidden shadow-card bg-white p-4">
-                <img src="/banner/pro3.png" alt="Home decor item" className="w-full aspect-square object-contain" />
-              </div>
-              <div className="rounded-3xl overflow-hidden shadow-card bg-white p-4 translate-y-6">
-                <img src="/banner/pro4.png" alt="Handmade product" className="w-full aspect-square object-contain" />
-              </div>
+            {/* soft floating background blobs */}
+            <div className="absolute -top-8 -right-4 w-36 h-36 bg-marigold/25 rounded-blob animate-floaty hidden sm:block" />
+            <div className="absolute -bottom-10 -left-6 w-32 h-32 bg-mehendi/20 rounded-blob animate-floaty hidden sm:block" style={{ animationDelay: '1.5s' }} />
+            <div className="absolute top-1/3 -left-3 w-14 h-14 bg-lavender/30 rounded-blob animate-floaty hidden md:block" style={{ animationDelay: '0.8s' }} />
+
+            {/* Hero visual: rotating mandala with the craft photo layered in front — no product imagery */}
+            <div className="relative mx-auto w-full max-w-[420px] sm:max-w-[500px] aspect-square">
+              {/* soft glow behind the mandala */}
+              <div className="absolute inset-8 bg-white/50 rounded-full blur-3xl" />
+
+              {/* rotating mandala */}
+              <img
+                src="/banner/mandala.png"
+                alt=""
+                aria-hidden="true"
+                className="utsaah-mandala-spin absolute inset-0 w-full h-full object-contain pointer-events-none select-none"
+              />
+             
+              {/* craft photo layered on top of the mandala, in the lower portion, grounded with a soft shadow */}
+              <img
+                src="/banner/craft-girls.png"
+                alt="Two friends happily crocheting and painting handmade crafts together"
+                className="absolute left-1/2 bottom-0 -translate-x-1/2 w-[88%] max-w-[420px] drop-shadow-[0_28px_22px_rgba(120,20,45,0.28)]"
+              />
             </div>
           </div>
         </div>
@@ -182,7 +214,7 @@ const Home = () => {
               <SectionHeading eyebrow="customer favourites" title="Best Sellers" center />
               <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
                 {collections.bestSellers.map((p) => <ProductCard key={p._id} product={p} />)}
-              </div>
+            </div>
             </Section>
           )}
 
@@ -216,42 +248,42 @@ const Home = () => {
                     />
                   </div>
                 ))}
-              </div>
             </div>
-          </Section>
+          </div>
+        </Section>
 
-          {/* ---------------- INSTAGRAM ---------------- */}
-          <Section bg="bg-canvas">
-            <SectionHeading eyebrow="follow along" title="Utsaah on Instagram" subtitle="Behind-the-scenes crafting, new drops &amp; happy customers." center />
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="aspect-square rounded-3xl bg-blush flex items-center justify-center overflow-hidden relative group">
-                  <img
-                    src={`/uinsta/u${i}.png`}
-                    alt={`Utsaah Instagram ${i}`}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-ink/0 group-hover:bg-ink/40 transition-colors flex items-center justify-center">
-                    <InstagramIcon className="text-white opacity-0 group-hover:opacity-100 transition-opacity" size={26} />
-                  </div>
+        {/* ---------------- INSTAGRAM ---------------- */}
+        <Section bg="bg-canvas">
+          <SectionHeading eyebrow="follow along" title="Utsaah on Instagram" subtitle="Behind-the-scenes crafting, new drops &amp; happy customers." center />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="aspect-square rounded-3xl bg-blush flex items-center justify-center overflow-hidden relative group">
+                <img
+                  src={`/uinsta/u${i}.png`}
+                  alt={`Utsaah Instagram ${i}`}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-ink/0 group-hover:bg-ink/40 transition-colors flex items-center justify-center">
+                  <InstagramIcon className="text-white opacity-0 group-hover:opacity-100 transition-opacity" size={26} />
                 </div>
-              ))}
-            </div>
-            <div className="text-center mt-8">
-              <a
-                href="https://www.instagram.com/utsaah_._"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 font-display font-semibold text-rani hover:text-rani-dark"
-              >
-                <InstagramIcon size={18} /> @utsaah_._ — Follow for more
-              </a>
-            </div>
-          </Section>
-        </>
-      )}
-    </div>
-  );
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <a
+              href="https://www.instagram.com/utsaah_._"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-display font-semibold text-rani hover:text-rani-dark"
+            >
+              <InstagramIcon size={18} /> @utsaah_._ — Follow for more
+            </a>
+          </div>
+        </Section>
+      </>
+    )}
+  </div>
+ );
 };
 
 export default Home;
