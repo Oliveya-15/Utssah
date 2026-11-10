@@ -1,4 +1,4 @@
-# 🧶 Utsaah — Handcrafted with Zeal
+# 🧶 Utsaah — Handcrafted with Love
 
 A full-stack e-commerce platform for handmade crochet, customised gifts and home decor, built on the **MERN stack** (MongoDB, Express, React, Node.js) based on the Utsaah SRS v1.0.
 
